@@ -33,6 +33,7 @@ module ActionText
     def embeds_blobs_table
       embeds_blobs.to_a.inject({}) do |table, blob|
         table[blob.id] = blob
+        table
       end
     end
 

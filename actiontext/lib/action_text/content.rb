@@ -76,7 +76,7 @@ module ActionText
     end
 
     def to_trix_html
-      render_attachments(&:to_trix_attachment).to_html
+      render_attachments({}, &:to_trix_attachment).to_html
     end
 
     def to_html
