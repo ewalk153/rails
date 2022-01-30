@@ -11,15 +11,15 @@ module ActionText
 
     def render_action_text_content(content, attachment_blobs={})
       self.prefix_partial_path_with_controller_namespace = false
-      sanitize_action_text_content(render_action_text_attachments(content, attachment_blobs))
+      sanitize_action_text_content(render_action_text_attachments(content))
     end
 
     def sanitize_action_text_content(content)
       sanitizer.sanitize(content.to_html, tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber).html_safe
     end
 
-    def render_action_text_attachments(content, attachment_blobs)
-      content.render_attachments(attachment_blobs) do |attachment|
+    def render_action_text_attachments(content)
+      content.render_attachments do |attachment|
         unless attachment.in?(content.gallery_attachments)
           attachment.node.tap do |node|
             node.inner_html = render_action_text_attachment attachment, locals: { in_gallery: false }

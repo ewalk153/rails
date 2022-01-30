@@ -5,6 +5,7 @@ module ActionText
     include Rendering, Serialization
 
     attr_reader :fragment
+    attr_accessor :attachment_blobs
 
     delegate :blank?, :empty?, :html_safe, :present?, to: :to_html # Delegating to to_html to avoid including the layout
 
@@ -57,9 +58,9 @@ module ActionText
       self.class.new([self.to_s.presence, *attachments].compact.join("\n"))
     end
 
-    def render_attachments(attachment_blobs, **options, &block)
+    def render_attachments(**options, &block)
       content = fragment.replace(ActionText::Attachment.tag_name) do |node|
-        block.call(attachment_for_node(node, attachment_blobs, **options))
+        block.call(attachment_for_node(node, **options))
       end
       self.class.new(content, canonicalize: false)
     end
@@ -72,18 +73,18 @@ module ActionText
     end
 
     def to_plain_text
-      render_attachments({}, with_full_attributes: false, &:to_plain_text).fragment.to_plain_text
+      render_attachments(with_full_attributes: false, &:to_plain_text).fragment.to_plain_text
     end
 
     def to_trix_html
-      render_attachments({}, &:to_trix_attachment).to_html
+      render_attachments(&:to_trix_attachment).to_html
     end
 
     def to_html
       fragment.to_html
     end
 
-    def to_rendered_html_with_layout(attachment_blobs: {})
+    def to_rendered_html_with_layout
       render layout: "action_text/contents/content", partial: to_partial_path, formats: :html, locals: { content: self, attachment_blobs: attachment_blobs }
     end
 
@@ -118,7 +119,7 @@ module ActionText
         @attachment_gallery_nodes ||= ActionText::AttachmentGallery.find_attachment_gallery_nodes(fragment)
       end
 
-      def attachment_for_node(node, attachment_blobs, with_full_attributes: true)
+      def attachment_for_node(node, with_full_attributes: true)
         attachment = ActionText::Attachment.from_node(node, attachment_blobs)
         with_full_attributes ? attachment.with_full_attributes : attachment
       end

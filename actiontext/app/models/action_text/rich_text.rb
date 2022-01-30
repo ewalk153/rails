@@ -27,7 +27,9 @@ module ActionText
     end
 
     def to_s
-      body.to_rendered_html_with_layout(attachment_blobs: embeds_blobs_table)
+      return unless body
+      body.attachment_blobs = embeds_blobs_table
+      body&.to_rendered_html_with_layout
     end
 
     def embeds_blobs_table
