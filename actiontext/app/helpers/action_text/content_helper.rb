@@ -9,7 +9,7 @@ module ActionText
     mattr_accessor(:allowed_attributes) { sanitizer.class.allowed_attributes + ActionText::Attachment::ATTRIBUTES }
     mattr_accessor(:scrubber)
 
-    def render_action_text_content(content, attachment_blobs={})
+    def render_action_text_content(content)
       self.prefix_partial_path_with_controller_namespace = false
       sanitize_action_text_content(render_action_text_attachments(content))
     end

@@ -85,7 +85,7 @@ module ActionText
     end
 
     def to_rendered_html_with_layout
-      render layout: "action_text/contents/content", partial: to_partial_path, formats: :html, locals: { content: self, attachment_blobs: attachment_blobs }
+      render layout: "action_text/contents/content", partial: to_partial_path, formats: :html, locals: { content: self }
     end
 
     def to_partial_path
